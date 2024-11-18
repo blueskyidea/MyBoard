@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        #circle {
+            width : 100px;
+            height : 100px;
+            border-radius: 50%;
+            background-color: gray;
+            margin: 10px;
+        }
+        .top {
+            width: 80%;
+            margin: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid rgb(206,223,252);
+            border-radius: 10px;
+            background-color: rgb(206,223,252);
+        }
+        .member_nickname {
+            font-size: 30px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .bottom {
+            width: 80%;
+            margin: auto;
+            border: 1px solid rgb(206,223,252);
+            border-radius: 10px;
+            background-color: rgb(206,223,252);
+        }
+        .info {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 10px;
+            margin-left: 20px;
+        }
+        button {
+            width: 130px;
+            height: 40px;
+            font-size: 17px;
+            border: 0;
+            outline: 1.5px rgb(68, 136, 244) solid;
+            border-radius: 5px;
+            padding-left: 10px;
+            background-color: rgb(164, 199, 255);
+            text-decoration: none;
+            color: black;
+        }
+        button:active {
+            width: 130px;
+            height: 40px;
+            font-size: 17px;
+            border: 0;
+            border-radius: 5px;
+            outline: 1.5px rgb(27, 76, 155) solid;
+            padding-left: 10px;
+            background-color: rgb(68, 136, 244);
+        }
+        .btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        let popupWindow;
+
+        function delOk(){
+            if(confirm('탈퇴하시겠습니까??')) {
+                popupWindow = window.open("/password.html", "비밀번호 입력", "resizeable");
+                popupWindow.resizeTo(480, 230);
+                popupWindow.onresize = (_=>{
+                    popupWindow.resizeTo(480,230);
+                })
+            }
+        }
+
+        function receivePassword(password) {
+            // 비밀번호를 받아서 서버로 전송하는 로직
+            fetch('/member/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    password: password
+                })
+            })
+            .then(response => {
+                // 서버에서 받은 응답을 텍스트로 처리
+                return response.text().then(data => {
+                    if (response.ok) {
+                        alert(data);  // 성공 메시지 표시
+                        window.location.href = '/member/select/Id';  // 페이지 리디렉션
+                    } else {
+                        throw new Error(data);  // 에러 메시지 처리
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);  // 에러 메시지를 경고창으로 표시
+            });
+        }
+
+        function storeMemberDataAndNavigate(memberId, memberName, memberEmail, memberRole) {
+            const member = {
+                id: memberId,
+                name: memberName,
+                email: memberEmail,
+                role: memberRole
+            };
+
+            // 로컬 스토리지에 회원 정보 저장
+            localStorage.setItem('memberData', JSON.stringify(member));
+
+            window.location.href = '/member/revisePage';
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <th:block th:if="${not #lists.isEmpty( members )}" th:each="member : ${members}">
+            <div class="top">
+                <div id="circle"></div>
+                <div>
+                    <div class="member_nickname" th:text="${member.nickname}"></div>
+                    <div class="role" style="margin-left: 10px;">
+                        <span th:if="${member.role == 'ROLE_ADMIN'}">운영자</span>
+                        <span th:if="${member.role == 'ROLE_USER'}">일반 회원</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="info">아이디: <span th:text="${member.id}" style="font-weight: normal"></span></div>
+                <div class="info">이름: <span th:text="${member.name}" style="font-weight: normal"></span></div>
+                <div class="info">이메일: <span th:text="${member.email}" style="font-weight: normal"></span></div>
+                <hr>
+                <div class="btn">
+                    <button th:onclick="|location.href='@{/myPage/myPost}'|">작성한 글</button>
+                    <button th:onclick="|location.href='@{/myPage/myComment}'|">작성한 댓글</button>
+                    <button th:onclick="storeMemberDataAndNavigate([[${member.id}]],[[${member.name}]], [[${member.email}]], [[${member.role}]]);">프로필 편집</button>
+                    <button th:onclick="|location.href='@{/member/logoutPage}'|">로그아웃</button>
+                    <button onclick="delOk()">탈퇴하기</button>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</body>
+</html>

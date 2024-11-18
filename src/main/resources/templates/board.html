@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <th:block layout:fragment="title">
+        <title>하어리 게시판</title>
+    </th:block>
+    <style>
+        .tb{border-top: 1px solid gray; border-bottom: 1px solid gray; border-collapse : collapse; margin: auto;}
+        .tap{border-bottom: 2px solid gray;}
+        .btn {
+            width: 70px;
+            height: 32px;
+            font-size: 13px;
+            border: 0;
+            border-radius: 5px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(164, 199, 255);
+        }
+        .btn:active {
+            width: 70px;
+            height: 32px;
+            font-size: 13px;
+            border: 0;
+            border-radius: 5px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(61, 135, 255);
+        }
+        a {
+            font-size: 12px;
+            color: black;
+            text-decoration-line: none;
+        }
+        .top {
+            width: 60%;
+            margin: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .main {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .myPage {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<th:block layout:fragment="content">
+    <div class="top">
+        <div class="main">
+            <h3>하어리 게시판</h3>
+        </div>
+        <div class="myPage">
+            <th:block sec:authorize="isAuthenticated()">
+                <button th:onclick="|location.href='@{/member/logoutPage}'|" class="btn">로그아웃</button>
+            </th:block>
+            <th:block sec:authorize="isAnonymous()">
+                <button th:onclick="|location.href='@{/member/loginPage}'|" class="btn">로그인</button>
+            </th:block>
+            <button th:onclick="|location.href='@{/myPage/my}'|" class="btn" id="myPage" style="width: 90px">마이페이지</button>
+        </div>
+    </div>
+
+    <div class="content" style="width: 60%; margin: auto;">
+        <section>
+            <!--/* 리스트 */-->
+            <table class="tb tb_col" style="width: 100%">
+                <colgroup>
+                    <col style="width:15%; text-align:center; border-bottom: 1px solid gray;"/>
+                    <col style="width:35%; text-align:center;"/>
+                    <col style="width:25%; text-align:center;"/>
+                    <col style="width:15%; text-align:center;"/>
+                    <col style="width:10%; text-align:center;"/>
+                </colgroup>
+                <thead>
+                <tr class="tap">
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">등록일</th>
+                    <th scope="col">추천</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${not #lists.isEmpty( posts )}" th:each="post : ${posts}" style="border-bottom: 1px solid gray; font-size: 16px; height: 40px;">
+                    <!--<td th:text="${row.noticeYn == false ? (status.size - status.index) : '공지'}"></td>-->
+                    <td style="text-align:center" th:text="${post.id}"></td>
+                    <td style="text-align:center">
+                        <a th:href="@{/select/Id/{Id}(Id=${post.id})}" th:text="${post.title}" style="font-size: 16px;"></a>
+                    </td>
+                    <td style="text-align:center" th:text="${post.writer}"></td>
+                    <td style="text-align:center" th:text="${#temporals.format( post.createAt, 'yyyy-MM-dd HH:mm' )}"></td>
+                    <td style="text-align:center" th:text="${post.total}"></td>
+                </tr>
+
+                <!--<tr th:unless="${not #lists.isEmpty( posts )}">
+                    <td colspan="5">
+                        <div class="no_data_msg">검색된 결과가 없습니다.</div>
+                    </td>
+                </tr>-->
+                </tbody>
+            </table>
+
+            <!--/* 검색 */-->
+            <div class="search_box" style="text-align: center; padding-top: 30px;">
+                <span style="float: left">
+                    <form id="searchForm" onsubmit="return false;" autocomplete="off">
+                        <div class="sch_group fl">
+                            <select title="검색 유형 선택">
+                                <option value="">전체 검색</option>
+                                <option value="">제목</option>
+                                <option value="">내용</option>
+                            </select>
+                            <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
+                            <button type="button" class="bt_search"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
+                        </div>
+                    </form>
+                </span>
+
+                <!-- 버튼 코드 -->
+                <span class="btn_set tr" style="float: right">
+                    <button th:onclick="|location.href='@{/postPage}'|" class="btn">글쓰기</button>
+                </span>
+            </div>
+
+            <!--/* 페이지네이션 */-->
+            <div class="paging" style="text-align:center">
+                <a href="#" class="page_bt first">첫 페이지</a><a href="#" class="page_bt prev">이전 페이지 그룹</a>
+                <p><span class="on">1</span><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">6</a><a href="#">7</a><a href="#">8</a><a href="#">9</a><a href="#">10</a></p>
+                <a href="#" class="page_bt next">다음 페이지 그룹</a><a href="#" class="page_bt last">마지막 페이지</a>
+            </div>
+
+        </section>
+    </div> <!--/* .content */-->
+    <script src="/js/token.js"></script>
+    <script src="/js/board.js"></script>  <!--board.js 파일 추가-->
+</th:block>
+</html>

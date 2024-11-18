@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        table {
+            width: 280px;
+            height: 550px;
+            margin: auto;
+
+        }
+        #emailLocal {
+            width: 127px;
+            height: 32px;
+            font-size: 15px;
+            border: 0;
+            border-color: lightgray;
+            border-radius: 15px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(233,233,233);
+        }
+        .text {
+            width: 250px;
+            height: 32px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 15px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(233,233,233);
+        }
+        select {
+            width: 100px;
+            height: 32px;
+            font-size: 15px;
+            border: 1;
+            border-color: lightgray;
+            border-radius: 15px;
+            outline: none;
+            padding-left: 10px;
+        }
+        .btn {
+            width: 262px;
+            height: 32px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 15px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(164, 199, 255);
+        }
+        .btn:active {
+            width: 262px;
+            height: 32px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 15px;
+            outline: none;
+            padding-left: 10px;
+            background-color: rgb(61, 135, 255);
+        }
+    </style>
+    <script>
+        function validateForm() {
+            var password = document.getElementsByName("password")[0].value;
+            var confirmPassword = document.getElementsByName("check")[0].value;
+            if (password !== confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return false;
+            } else {
+                alert("가입 성공!");
+                return true; // 비밀번호가 일치하면 폼 제출 허용
+            }
+        }
+    </script>
+</head>
+<body>
+<th:block layout:fragment="content">
+<form th:action="@{/member/join}" method="post" onsubmit="return validateForm()">
+    <table>
+        <tr>
+            <td><h2>회원가입</h2></td>
+        </tr>
+        <tr><td>아이디</td></tr>
+        <tr><td><input type="text" class="text" name="id" required></td></tr>
+        <tr><td>비밀번호</td></tr>
+        <tr><td><input type="password" class="text" name="password" required></td></tr>
+        <tr><td>비밀번호 확인</td></tr>
+        <tr><td><input type="password" class="text" name="check"></td></tr>
+        <tr><td>이름</td></tr>
+        <tr><td><input type="text" class="text" name="name" required></td></tr>
+        <tr><td>이메일</td></tr>
+        <tr>
+            <td><input type="text" id="emailLocal" name="email_local" required
+                       onchange="document.getElementById('emailFull').value = this.value + '@' + document.getElementById('emailDomain').value">
+                @
+                <select id="emailDomain" name="email_domain" required
+                        onchange="document.getElementById('emailFull').value = document.getElementById('emailLocal').value + '@' + this.value">
+                    <option>naver.com</option>
+                    <option>gmail.com</option>
+                    <option>daum.net</option>
+                    <option>nate.com</option>
+                </select>
+            </td>
+        </tr>
+        <input type="hidden" id="emailFull" name="email">
+        <tr><td>회원 유형</td></tr>
+        <tr>
+            <td>
+                <div class="form_toggle row-vh d-flex flex-row justify-content-between">
+                    <div class="form_radio_btn">
+                        <input type="radio" name="admin" value="true" required>
+                        <label>운영자</label>
+                    </div>
+                    <div class="form_radio_btn">
+                        <input type="radio" name="admin" value="false" checked required>
+                        <label>일반 회원</label>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr><td><input type="submit" value="가입하기" class="btn" ></td></tr>
+    </table>
+</form>
+</th:block>
+</body>
+</html>

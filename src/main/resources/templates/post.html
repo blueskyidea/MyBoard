@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>글쓰기</title>
+    <style>
+        table {
+            margin: auto;
+        }
+        input[type="text"] {
+            border: 1.5px rgb(68, 136, 244) solid;
+            width: 500px;
+            height: 30px;
+            border-radius: 5px;
+            padding-left: 10px;
+        }
+        textarea {
+            border: 1.5px rgb(68, 136, 244) solid;
+            width: 500px;
+            height: 400px;
+            border-radius: 5px;
+            padding-left: 10px;
+            padding-top: 10px;
+            resize: none;
+        }
+        .header {
+            height: 30px;
+        }
+        button {
+            width: 100px;
+            height: 40px;
+            font-size: 15px;
+            border: 0;
+            outline: 1.5px rgb(68, 136, 244) solid;
+            border-radius: 5px;
+            padding-left: 10px;
+            background-color: rgb(164, 199, 255);
+        }
+        button:active {
+            width: 100px;
+            height: 40px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 5px;
+            outline: 1.5px rgb(27, 76, 155) solid;
+            padding-left: 10px;
+            background-color: rgb(68, 136, 244);
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <post>
+            <!--아이디 정보 저장-->
+            <input type="hidden"  id="board-id" th:value="${post.id}">
+            <table>
+                <tr><td><h2>글쓰기</h2></td></tr>
+                <tr><td class="header">Title</td></tr>
+                <tr><td><input type="text" placeholder="제목을 입력하세요" id="title" th:value="${post.title}" required/></td></tr>
+                <tr><td class="header">Comment</td></tr>
+                <tr><td><textarea placeholder="내용을 입력하세요" id="contents" th:text="${post.contents}" required></textarea></td></tr>
+                <!--id가 있을 때는 [수정]버튼을, 없을 때는 [등록]버튼이 보이게 함-->
+                <tr><td><button th:if="${post.id} != null" type="button" id="modify-btn">수정</button></td></tr>
+                <tr><td><button th:if="${post.id} == null" type="button" id="create-btn">등록</button></td></tr>
+            </table>
+        </post>
+    </div>
+    <script src="/js/board.js"></script>  <!--board.js 파일 추가-->
+</body>
+</html>

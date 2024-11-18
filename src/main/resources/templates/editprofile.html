@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>프로필 편집 </title>
+    <style>
+        #circle {
+            width : 100px;
+            height : 100px;
+            border-radius: 50%;
+            background-color: gray;
+            margin: 10px;
+        }
+        .top {
+            width: 80%;
+            margin: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid rgb(206,223,252);
+            border-radius: 10px;
+            background-color: rgb(206,223,252);
+        }
+        .member_id {
+            font-size: 30px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .bottom {
+            width: 80%;
+            margin: auto;
+            border: 1px solid rgb(206,223,252);
+            border-radius: 10px;
+            background-color: rgb(206,223,252);
+        }
+        .text {
+            width: 250px;
+            height: 32px;
+            font-size: 15px;
+            border: 1px solid rgb(115, 164, 242);
+            border-radius: 5px;
+            outline: none;
+            padding-left: 10px;
+            margin-left: 8px;
+            background-color: white;
+        }
+        .info {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 10px;
+            margin-left: 20px;
+        }
+        button {
+            width: 50px;
+            height: 35px;
+            font-size: 15px;
+            border: 0;
+            outline: 1.5px rgb(68, 136, 244) solid;
+            border-radius: 5px;
+            margin-left: 10px;
+            background-color: rgb(164, 199, 255);
+            text-decoration: none;
+            color: black;
+        }
+        button:active {
+            width: 50px;
+            height: 35px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 5px;
+            outline: 1.5px rgb(27, 76, 155) solid;
+            margin-left: 10px;
+            background-color: rgb(68, 136, 244);
+        }
+        .ok {
+            width: 10%;
+            height: 35px;
+            background-color: white;
+            margin: 10px;
+            margin-top: 30px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .ok:active {
+            width: 10%;
+            height: 35px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            outline: 1.5px rgb(27, 76, 155) solid;
+            margin-left: 10px;
+            background-color: rgb(138,183,255);
+        }
+    </style>
+    <script>
+        let popupWindow;
+
+        function populateMemberData() {
+            // Get member data from local storage
+            const memberData = JSON.parse(localStorage.getItem('memberData'));
+
+            if (memberData) {
+                // Populate the form fields with member data
+                document.getElementById('memberId').textContent = memberData.id;
+                document.getElementById('memberName').value = memberData.name;
+                document.getElementById('memberEmail').value = memberData.email;
+                document.getElementById('password').value = '';
+                document.getElementById('newpassword').value = '';
+
+                const roleElement = document.getElementById('memberRole');
+                if (memberData.role === 'ROLE_ADMIN') {
+                    roleElement.textContent = '운영자';
+                } else if (memberData.role === 'ROLE_USER') {
+                    roleElement.textContent = '일반 회원';
+                }
+            } else {
+                console.error('No member data found in local storage.');
+            }
+        }
+
+        function editOk(){
+            popupWindow = window.open("/newpassword.html", "비밀번호 수정", "resizeable");
+            popupWindow.resizeTo(375, 410);
+            popupWindow.onresize = (_=>{
+                popupWindow.resizeTo(375, 410);
+            })
+        }
+
+        function receivePassword() {
+            const name = document.getElementById('memberName').value;
+            const email = document.getElementById('memberEmail').value;
+            const password = document.getElementById('password').value;
+            const newpassword = document.getElementById('newpassword').value;
+
+            const memberData = {
+                name: name,
+                email: email,
+                password: password ? password : null,
+                newpassword: newpassword ? newpassword : null
+            };
+
+            fetch('/member/revise', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(memberData)
+            })
+            .then(response => {
+                // 서버에서 받은 응답을 텍스트로 처리
+                return response.text().then(data => {
+                    if (response.ok) {
+                        alert(data);  // 성공 메시지 표시
+                        window.location.href = '/member/select/Id';  // 페이지 리디렉션
+                    } else {
+                        throw new Error(data);  // 에러 메시지 처리
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);  // 에러 메시지를 경고창으로 표시
+            });
+        }
+
+        window.onload = populateMemberData;
+    </script>
+</head>
+<body>
+    <div class="top">
+        <div id="circle"></div>
+        <div>
+            <div class="member_id" id="memberId"></div>
+            <div class="role" id="memberRole" style="margin-left: 10px;"></div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="info">이름:
+            <input type="text" class="text" name="id" id="memberName" style="font-weight: normal" required>
+        </div>
+        <div class="info">비밀번호:
+            <span style="font-weight: bold">**********</span>
+            <button onclick="editOk()" >수정</button>
+        </div>
+        <div class="info">이메일:
+            <input type="text" class="text" name="id" id="memberEmail" style="font-weight: normal" required>
+        </div>
+        <!-- 비밀번호 숨김 필드 추가 -->
+        <input type="hidden" id="password" value="">
+        <input type="hidden" id="newpassword" value="">
+        <div style="margin-left: 15px;">
+            <button onclick="receivePassword()" class="ok">적용</button>
+            <button onclick="window.location.href='/member/select/Id';" class="ok">취소</button>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

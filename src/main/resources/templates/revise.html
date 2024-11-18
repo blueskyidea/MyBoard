@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>글쓰기</title>
+    <style>
+        table {
+            margin: auto;
+        }
+        input[type="text"] {
+            border: 1.5px rgb(68, 136, 244) solid;
+            width: 500px;
+            height: 30px;
+            border-radius: 5px;
+            padding-left: 10px;
+        }
+        textarea {
+            border: 1.5px rgb(68, 136, 244) solid;
+            width: 500px;
+            height: 400px;
+            border-radius: 5px;
+            padding-left: 10px;
+            padding-top: 10px;
+            resize: none;
+        }
+        .header {
+            height: 30px;
+        }
+        input[type="submit"] {
+            width: 100px;
+            height: 40px;
+            font-size: 15px;
+            border: 0;
+            outline: 1.5px rgb(68, 136, 244) solid;
+            border-radius: 5px;
+            padding-left: 10px;
+            background-color: rgb(164, 199, 255);
+        }
+        input[type="submit"]:active {
+            width: 100px;
+            height: 40px;
+            font-size: 15px;
+            border: 0;
+            border-radius: 5px;
+            outline: 1.5px rgb(27, 76, 155) solid;
+            padding-left: 10px;
+            background-color: rgb(68, 136, 244);
+        }
+    </style>
+    <script type="text/javascript">
+        function revise(event) {
+            event.preventDefault(); // 폼의 기본 제출 동작을 막음
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('/revise', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.text().then(text => ({status: response.status, text}))) // 응답의 상태와 텍스트를 함께 반환
+            .then(({status, text}) => {
+                if (status === 200) {
+                    alert(text);  // 서버에서 반환한 메시지 표시
+                    const postId = document.getElementById('postId').value;
+                    window.location.href = '/select/Id/' + postId;  // 페이지 리디렉션
+                } else {
+                    throw new Error(text);  // 예외 메시지를 에러로 던짐
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);  // 예외 메시지를 알림으로 표시
+            });
+        }
+    </script>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <form th:action="@{/revise}" method="post" onsubmit="revise(event)">
+        <input type="hidden" name="id" id="postId" th:value="${param.id}"/>
+        <table>
+            <tr><td><h2>수정하기</h2></td></tr>
+            <tr><td class="header">Title</td></tr>
+            <tr><td><input type="text" placeholder="제목을 입력하세요" name="title" th:value="${param.title}" required/></td></tr>
+            <tr><td class="header">Comment</td></tr>
+            <tr><td><textarea placeholder="내용을 입력하세요" name="contents" required th:text="${param.contents}"></textarea></td></tr>
+            <tr><td><input type="submit" value="수정"/></td></tr>
+        </table>
+    </form>
+</th:block>
+</body>
+</html>
