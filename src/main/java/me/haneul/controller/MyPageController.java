@@ -5,12 +5,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.haneul.dto.BoardResponseDTO;
 import me.haneul.dto.CommentResponseDTO;
+import me.haneul.dto.MemberDTO;
 import me.haneul.service.BoardService;
 import me.haneul.service.CommentService;
 import me.haneul.service.MemberService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
@@ -46,5 +51,21 @@ public class MyPageController {
         List<CommentResponseDTO> comments = commentService.select();
         model.addAttribute("comments", comments);
         return "mycomments";
+    }
+
+    //프로필 편집(회원 수정)
+    @GetMapping("/revisePage")
+    public String revisePage() {
+        return "editprofile";
+    }
+    @PutMapping("/reviseMember")
+    public Object revise(@RequestBody MemberDTO memberDTO) throws Exception {
+        try {
+            String msg = memberService.revise(memberDTO);
+            return ResponseEntity.ok(msg);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }
