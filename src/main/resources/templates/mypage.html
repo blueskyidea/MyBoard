@@ -112,10 +112,11 @@
             });
         }
 
-        function storeMemberDataAndNavigate(memberId, memberName, memberEmail, memberRole) {
+        function storeMemberDataAndNavigate(memberId, memberName, memberNickname, memberEmail, memberRole) {
             const member = {
                 id: memberId,
                 name: memberName,
+                nickname: memberNickname,
                 email: memberEmail,
                 role: memberRole
             };
@@ -123,7 +124,7 @@
             // 로컬 스토리지에 회원 정보 저장
             localStorage.setItem('memberData', JSON.stringify(member));
 
-            window.location.href = '/member/revisePage';
+            window.location.href = '/myPage/revisePage';
         }
     </script>
 </head>
@@ -148,7 +149,7 @@
                 <div class="btn">
                     <button th:onclick="|location.href='@{/myPage/myPost}'|">작성한 글</button>
                     <button th:onclick="|location.href='@{/myPage/myComment}'|">작성한 댓글</button>
-                    <button th:onclick="storeMemberDataAndNavigate([[${member.id}]],[[${member.name}]], [[${member.email}]], [[${member.role}]]);">프로필 편집</button>
+                    <button th:onclick="storeMemberDataAndNavigate([[${member.id}]],[[${member.name}]], [[${member.nickname}]], [[${member.email}]], [[${member.role}]]);">프로필 편집</button>
                     <button th:onclick="|location.href='@{/member/logoutPage}'|">로그아웃</button>
                     <button onclick="delOk()">탈퇴하기</button>
                 </div>
