@@ -92,33 +92,33 @@ public class MemberService {
 //        return new MemberDTO(member);
 //    }*/
 //
-//    //회원 수정
-//    @Transactional
-//    public String revise(MemberDTO memberDTO, HttpServletRequest request) throws Exception {
-//        //토큰에서 사용자 아이디 가져오기
-//        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        //DB에서 회원 정보 가져오기
-//        Member member = memberRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
-//        );
-//
-//        String password;
-//        if(memberDTO.getNewpassword() != null) {  //새로운 비밀번호가 있으면
-//            //비밀번호 일치하는지 확인
-//            if (!passwordEncoder.matches(memberDTO.getPassword(), member.getPassword())) {  //비밀번호 복호화
-//                throw new Exception("비밀번호가 일치하지 않습니다.");
-//            }
-//            password = passwordEncoder.encode(memberDTO.getNewpassword()); //새로운 비밀번호 암호화
-//            memberDTO.setPassword(password);  //암호화한 비밀번호 저장
-//        }
-//
-//        //수정(비밀번호, 이름, 이메일 수정)
-//        member.revise(memberDTO);
-//        //return new MemberDTO(member);
-//
-//        return "수정이 완료되었습니다.";
-//    }
+    //회원 수정
+    @Transactional
+    public String revise(MemberDTO memberDTO) throws Exception {
+        //토큰에서 사용자 아이디 가져오기
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //DB에서 회원 정보 가져오기
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
+        );
+
+        String password;
+        if(memberDTO.getNewpassword() != null) {  //새로운 비밀번호가 있으면
+            //비밀번호 일치하는지 확인
+            if (!passwordEncoder.matches(memberDTO.getPassword(), member.getPassword())) {  //비밀번호 복호화
+                throw new Exception("비밀번호가 일치하지 않습니다.");
+            }
+            password = passwordEncoder.encode(memberDTO.getNewpassword()); //새로운 비밀번호 암호화
+            memberDTO.setPassword(password);  //암호화한 비밀번호 저장
+        }
+
+        //수정(비밀번호, 이름, 닉네임, 이메일 수정)
+        member.revise(memberDTO);
+        //return new MemberDTO(member);
+
+        return "수정이 완료되었습니다.";
+    }
 //
 //    //회원 삭제
 //    @Transactional
