@@ -26,7 +26,7 @@ public class Board extends Post{
     private String contents;  //내용
 
     @Column(nullable = false)
-    private String writer;  //작성자(닉네임)
+    private String writer;  //작성자
 
     /*@OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") //댓글 정렬

@@ -2,6 +2,7 @@ package me.haneul.controller;
 
 import me.haneul.dto.AddBoardRequest;
 import me.haneul.dto.BoardResponseDTO;
+import me.haneul.dto.BoardWithNicknameDTO;
 import me.haneul.dto.InsertDTO;
 import me.haneul.entity.Board;
 import me.haneul.service.BoardService;
@@ -31,7 +32,7 @@ public class BoardController {
     @GetMapping("/select")  //게시글 전체 조회
     @Operation(summary = "게시글 전체 조회", description = "게시글(제목+작성자) 조회 시 사용하는 API")
     public String selectAll(Model model) {
-        List<BoardResponseDTO> posts = boardService.selectAll();
+        List<BoardWithNicknameDTO> posts = boardService.selectAll();
         model.addAttribute("posts", posts);
         return "board";
     }

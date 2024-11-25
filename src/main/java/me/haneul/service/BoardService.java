@@ -2,10 +2,7 @@ package me.haneul.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import me.haneul.config.jwt.JwtTokenProvider;
-import me.haneul.dto.AddBoardRequest;
-import me.haneul.dto.BoardResponseDTO;
-import me.haneul.dto.CommentResponseDTO;
-import me.haneul.dto.InsertDTO;
+import me.haneul.dto.*;
 import me.haneul.entity.Board;
 import me.haneul.entity.Comments;
 import me.haneul.entity.Member;
@@ -20,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
@@ -34,8 +32,12 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardResponseDTO> selectAll() {  //전체 조회
-        return boardRepository.findAll().stream().map(BoardResponseDTO::new).toList();
+    public List<BoardWithNicknameDTO> selectAll() {  //전체 조회
+        List<Object[]> results = boardRepository.findAllWithNickname();
+        return results.stream()
+                .map(result -> new BoardWithNicknameDTO((Board) result[0], (String) result[1]))
+                .collect(Collectors.toList());
+//        return boardRepository.findAll().stream().map(BoardResponseDTO::new).toList();
     }
 
     //게시글+댓글 조회

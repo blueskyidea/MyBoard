@@ -97,7 +97,7 @@
                     <td style="text-align:center">
                         <a th:href="@{/select/Id/{Id}(Id=${post.id})}" th:text="${post.title}" style="font-size: 16px;"></a>
                     </td>
-                    <td style="text-align:center" th:text="${post.writer}"></td>
+                    <td style="text-align:center" th:text="${post.nickname}"></td>
                     <td style="text-align:center" th:text="${#temporals.format( post.createAt, 'yyyy-MM-dd HH:mm' )}"></td>
                     <td style="text-align:center" th:text="${post.total}"></td>
                 </tr>
