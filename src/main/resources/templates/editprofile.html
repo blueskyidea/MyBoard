@@ -23,7 +23,7 @@
             border-radius: 10px;
             background-color: rgb(206,223,252);
         }
-        .member_id {
+        .member_nickname {
             font-size: 30px;
             font-weight: bold;
             margin-left: 10px;
@@ -51,6 +51,7 @@
             font-weight: bold;
             margin: 10px;
             margin-left: 20px;
+            margin-top: 10px;
         }
         button {
             width: 50px;
@@ -105,6 +106,7 @@
                 // Populate the form fields with member data
                 document.getElementById('memberId').textContent = memberData.id;
                 document.getElementById('memberName').value = memberData.name;
+                document.getElementById('memberNickname').value = memberData.nickname;
                 document.getElementById('memberEmail').value = memberData.email;
                 document.getElementById('password').value = '';
                 document.getElementById('newpassword').value = '';
@@ -130,18 +132,20 @@
 
         function receivePassword() {
             const name = document.getElementById('memberName').value;
+            const nickname = document.getElementById('memberNickname').value;
             const email = document.getElementById('memberEmail').value;
             const password = document.getElementById('password').value;
             const newpassword = document.getElementById('newpassword').value;
 
             const memberData = {
                 name: name,
+                nickname: nickname,
                 email: email,
                 password: password ? password : null,
                 newpassword: newpassword ? newpassword : null
             };
 
-            fetch('/member/revise', {
+            fetch('/myPage/reviseMember', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -153,7 +157,7 @@
                 return response.text().then(data => {
                     if (response.ok) {
                         alert(data);  // 성공 메시지 표시
-                        window.location.href = '/member/select/Id';  // 페이지 리디렉션
+                        window.location.href = '/myPage/my';  // 페이지 리디렉션
                     } else {
                         throw new Error(data);  // 에러 메시지 처리
                     }
@@ -172,17 +176,22 @@
     <div class="top">
         <div id="circle"></div>
         <div>
-            <div class="member_id" id="memberId"></div>
+            <div class="info" style="margin-left: 10px;">닉네임:
+                <input type="text" class="text" name="id" id="memberNickname" style="font-weight: normal" required>
+            </div>
             <div class="role" id="memberRole" style="margin-left: 10px;"></div>
         </div>
     </div>
     <div class="bottom">
-        <div class="info">이름:
-            <input type="text" class="text" name="id" id="memberName" style="font-weight: normal" required>
+        <div class="info" style="margin-top: 20px;">아이디:
+            <span id="memberId" style="font-weight: normal;"></span>
         </div>
         <div class="info">비밀번호:
-            <span style="font-weight: bold">**********</span>
+            <span style="font-weight: bold;">**********</span>
             <button onclick="editOk()" >수정</button>
+        </div>
+        <div class="info">이 름:
+            <input type="text" class="text" name="id" id="memberName" style="font-weight: normal; margin-left: 19px;" required>
         </div>
         <div class="info">이메일:
             <input type="text" class="text" name="id" id="memberEmail" style="font-weight: normal" required>
