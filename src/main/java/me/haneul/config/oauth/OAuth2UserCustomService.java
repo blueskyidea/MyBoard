@@ -73,6 +73,7 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
                         .id(id)
                         .email(email)
                         .name(name)
+                        .nickname(id)
                         .role(UserRoleEnum.USER)
                         .build());
 
