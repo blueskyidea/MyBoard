@@ -40,23 +40,7 @@ public class MemberController {
             return "redirect:/member/joinPage";
         }
     }
-//
-//    //회원 수정
-//    @GetMapping("/revisePage")
-//    public String revisePage() {
-//        return "editprofile";
-//    }
-//    @PutMapping("/revise")
-//    public Object revise(@RequestBody MemberDTO memberDTO, HttpServletRequest request) throws Exception {
-//        System.out.println("회원 수정 이름: " + memberDTO.getName() + " 비밀번호: " + memberDTO.getNewpassword() + " 이메일: " + memberDTO.getEmail());
-//        try {
-//            String msg = memberService.revise(memberDTO, request);
-//            return ResponseEntity.ok(msg);
-//        }
-//        catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
+
 //
 //    @DeleteMapping("/delete")  //회원 삭제(비밀번호 필요)
 //    public Object delete(@RequestBody LoginDTO loginDTO, HttpServletRequest request) throws Exception {
