@@ -48,6 +48,7 @@ public class BoardController {
         return "boardDetail";
     }
 
+    //게시글 작성+수정
     @GetMapping("/postPage")
     //id 키를 가진 쿼리 파라미터의 값을 id 변수에 매핑(id는 없을 수도 있음)
     public String postPage(@RequestParam(required = false, name = "id") Long id, Model model) {
@@ -84,5 +85,12 @@ public class BoardController {
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/search")
+    public String search(@RequestParam("type") String type, @RequestParam("keyword") String keyword, Model model) {
+        List<BoardWithNicknameDTO> posts = boardService.search(type, keyword);
+        model.addAttribute("posts", posts);
+        return "board";
     }
 }

@@ -108,6 +108,7 @@
                 document.getElementById('memberName').value = memberData.name;
                 document.getElementById('memberNickname').value = memberData.nickname;
                 document.getElementById('memberEmail').value = memberData.email;
+                document.getElementById('memberEmail_noMdf').textContent = memberData.email;
                 document.getElementById('password').value = '';
                 document.getElementById('newpassword').value = '';
 
@@ -116,6 +117,18 @@
                     roleElement.textContent = '운영자';
                 } else if (memberData.role === 'ROLE_USER') {
                     roleElement.textContent = '일반 회원';
+                }
+
+                <!--OAuth2로 로그인 했을 경우 비밀번호, 이메일 수정 불가-->
+                if (!memberData.password) {
+                    const passwordDiv = document.getElementById('passwordDiv');
+                    passwordDiv.style.display = 'none';
+
+                    const emailDiv = document.getElementById('emailDiv');
+                    emailDiv.style.display = 'none';
+
+                    const email_noMdfDiv = document.getElementById('email_noMdfDiv');
+                    email_noMdfDiv.style.display = 'block';
                 }
             } else {
                 console.error('No member data found in local storage.');
@@ -186,15 +199,18 @@
         <div class="info" style="margin-top: 20px;">아이디:
             <span id="memberId" style="font-weight: normal;"></span>
         </div>
-        <div class="info">비밀번호:
+        <div class="info" id="passwordDiv">비밀번호:
             <span style="font-weight: bold;">**********</span>
             <button onclick="editOk()" >수정</button>
         </div>
         <div class="info">이 름:
             <input type="text" class="text" name="id" id="memberName" style="font-weight: normal; margin-left: 19px;" required>
         </div>
-        <div class="info">이메일:
+        <div class="info" id="emailDiv">이메일:
             <input type="text" class="text" name="id" id="memberEmail" style="font-weight: normal" required>
+        </div>
+        <div class="info" id="email_noMdfDiv" style="display: none;">이메일:
+            <span id="memberEmail_noMdf" style="font-weight: normal;"></span>
         </div>
         <!-- 비밀번호 숨김 필드 추가 -->
         <input type="hidden" id="password" value="">

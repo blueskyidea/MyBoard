@@ -41,18 +41,6 @@ public class MemberController {
         }
     }
 
-//
-//    @DeleteMapping("/delete")  //회원 삭제(비밀번호 필요)
-//    public Object delete(@RequestBody LoginDTO loginDTO, HttpServletRequest request) throws Exception {
-//        try {
-//            String msg = memberService.delete(loginDTO, request);
-//            return ResponseEntity.ok(msg);
-//        }
-//        catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
-
     //로그인
     @GetMapping("/loginPage")
     public String loginPage() {

@@ -197,3 +197,17 @@ function httpRequest(method, url, body, success, fail) {
         }
     });
 }
+
+//검색 기능
+function search() {
+    const keyword = document.getElementById("keyword").value.trim();
+
+    if (keyword === "") {
+        alert("키워드를 입력해주세요.");
+        return;
+    }
+
+    const searchType = document.getElementById("searchType").value;
+    // `/search`로 GET 요청 보내기
+    window.location.href = `/search?type=${searchType}&keyword=${encodeURIComponent(keyword)}`;
+}

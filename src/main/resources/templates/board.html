@@ -115,13 +115,16 @@
                 <span style="float: left">
                     <form id="searchForm" onsubmit="return false;" autocomplete="off">
                         <div class="sch_group fl">
-                            <select title="검색 유형 선택">
-                                <option value="">전체 검색</option>
-                                <option value="">제목</option>
-                                <option value="">내용</option>
+                            <select id="searchType" title="검색 유형 선택">
+                                <option value="all">제목+내용</option>
+                                <option value="title">제목</option>
+                                <option value="contents">내용</option>
+                                <option value="nickname">닉네임</option>
                             </select>
-                            <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
-                            <button type="button" class="bt_search"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
+                            <input id="keyword" type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력"/>
+                            <button type="button" class="bt_search" th:onclick = "search()">
+                                <i class="fas fa-search"></i><span class="skip_info">검색</span>
+                            </button>
                         </div>
                     </form>
                 </span>

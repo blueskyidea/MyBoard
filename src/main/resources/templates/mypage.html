@@ -86,7 +86,7 @@
 
         function receivePassword(password) {
             // 비밀번호를 받아서 서버로 전송하는 로직
-            fetch('/member/delete', {
+            fetch('/myPage/deleteMember', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,11 +112,12 @@
             });
         }
 
-        function storeMemberDataAndNavigate(memberId, memberName, memberNickname, memberEmail, memberRole) {
+        function storeMemberDataAndNavigate(memberId, memberName, memberNickname, memberPassword, memberEmail, memberRole) {
             const member = {
                 id: memberId,
                 name: memberName,
                 nickname: memberNickname,
+                password: memberPassword,
                 email: memberEmail,
                 role: memberRole
             };
@@ -149,7 +150,7 @@
                 <div class="btn">
                     <button th:onclick="|location.href='@{/myPage/myPost}'|">작성한 글</button>
                     <button th:onclick="|location.href='@{/myPage/myComment}'|">작성한 댓글</button>
-                    <button th:onclick="storeMemberDataAndNavigate([[${member.id}]],[[${member.name}]], [[${member.nickname}]], [[${member.email}]], [[${member.role}]]);">프로필 편집</button>
+                    <button th:onclick="storeMemberDataAndNavigate([[${member.id}]],[[${member.name}]], [[${member.nickname}]], [[${member.password}]], [[${member.email}]], [[${member.role}]]);">프로필 편집</button>
                     <button th:onclick="|location.href='@{/member/logoutPage}'|">로그아웃</button>
                     <button onclick="delOk()">탈퇴하기</button>
                 </div>

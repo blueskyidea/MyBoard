@@ -15,6 +15,7 @@ import me.haneul.entity.Member;
 import me.haneul.entity.RefreshToken;
 import me.haneul.repository.MemberRepository;
 import me.haneul.repository.RefreshTokenRepository;
+import me.haneul.util.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -37,8 +38,8 @@ public class MemberService {
 //    private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-//    private final BoardService boardService;
-//    private final RefreshTokenRepository refreshTokenRepository;
+    private final BoardService boardService;
+    private final RefreshTokenRepository refreshTokenRepository;
 //
 //
 //    @Transactional(readOnly = true)  //전체 조회
@@ -119,34 +120,39 @@ public class MemberService {
 
         return "수정이 완료되었습니다.";
     }
-//
-//    //회원 삭제
-//    @Transactional
-//    public String delete(LoginDTO loginDTO, HttpServletRequest request) throws Exception {
-//        //토큰에서 사용자 아이디 가져오기
-//        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        //DB에서 회원 정보 가져오기
-//        Member member = memberRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
-//        );
-//        //비밀번호 일치하는지 확인
-//        if(!passwordEncoder.matches(loginDTO.getPassword(), member.getPassword())) {  //비밀번호 복호화
-//            throw new Exception("비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        //만약 해당 회원이 작성한 게시글이 있다면 전부 삭제
-//        boardService.deleteAll(id);
-//
-//        //Redis에서 해당 회원 토큰 삭제
-//        //refreshTokenRepository.delete(id);
-//
-//        //해당 회원 삭제
-//        memberRepository.delete(member);
-//
-//        return "탈퇴가 완료되었습니다.";
-//    }
-//
+
+    //회원 삭제
+    @Transactional
+    public String delete(LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        //토큰에서 사용자 아이디 가져오기
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //DB에서 회원 정보 가져오기
+        Member member = memberRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
+        );
+
+        //비밀번호 일치하는지 확인
+        if(!passwordEncoder.matches(loginDTO.getPassword(), member.getPassword())) {  //비밀번호 복호화
+            throw new Exception("비밀번호가 일치하지 않습니다.");
+        }
+
+        //만약 해당 회원이 작성한 게시글이 있다면 전부 삭제
+        boardService.deleteAll(id);
+
+        //쿠키 삭제
+        CookieUtil.deleteCookie(request, response, "access_token");
+        CookieUtil.deleteCookie(request, response, "refresh_token");
+
+        //Redis에서 해당 회원 토큰 삭제
+        refreshTokenRepository.delete(id);
+
+        //해당 회원 삭제
+        memberRepository.delete(member);
+
+        return "탈퇴가 완료되었습니다.";
+    }
+
     // 로그인
     @Transactional(readOnly = true)
     public ApiResponseDTO<SuccessResponse> login(LoginDTO loginDTO) {

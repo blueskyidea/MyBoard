@@ -2,9 +2,11 @@ package me.haneul.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import me.haneul.dto.BoardResponseDTO;
 import me.haneul.dto.CommentResponseDTO;
+import me.haneul.dto.LoginDTO;
 import me.haneul.dto.MemberDTO;
 import me.haneul.service.BoardService;
 import me.haneul.service.CommentService;
@@ -13,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -62,6 +61,18 @@ public class MyPageController {
     public Object revise(@RequestBody MemberDTO memberDTO) throws Exception {
         try {
             String msg = memberService.revise(memberDTO);
+            return ResponseEntity.ok(msg);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+    @DeleteMapping("/deleteMember")  //회원 삭제(비밀번호 필요)
+    public Object delete(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            String msg = memberService.delete(loginDTO, request, response);
             return ResponseEntity.ok(msg);
         }
         catch (Exception e) {

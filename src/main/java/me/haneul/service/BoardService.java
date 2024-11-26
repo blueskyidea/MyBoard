@@ -126,6 +126,30 @@ public class BoardService {
 //        return token;
 //    }
 
+    @Transactional(readOnly = true)
+    public List<BoardWithNicknameDTO> search(String type, String keyword) {  //전체 조회
+        List<Object[]> results = null;
+
+        switch (type) {
+            case "all":
+                results = boardRepository.findByTitleOrContentsContaining(keyword);
+                break;
+            case "title":
+                results = boardRepository.findByTitleContaining(keyword);
+                break;
+            case "contents":
+                results = boardRepository.findByContentsContaining(keyword);
+                break;
+            case "nickname":
+                results = boardRepository.findByNicknameContaining(keyword);
+                break;
+        }
+
+        return results.stream()
+                .map(result -> new BoardWithNicknameDTO((Board) result[0], (String) result[1]))
+                .collect(Collectors.toList());
+    }
+
     public Board findById(Long Id) {
         return boardRepository.findById(Id)
                 .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
